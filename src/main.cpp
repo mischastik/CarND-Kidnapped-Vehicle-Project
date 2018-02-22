@@ -1,7 +1,9 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include <uWS/uWS.h>
 #include <iostream>
 #include "json.hpp"
 #include <math.h>
+#undef _CRT_SECURE_NO_WARNINGS
 #include "particle_filter.h"
 
 using namespace std;
@@ -45,8 +47,11 @@ int main()
 
   // Create particle filter
   ParticleFilter pf;
-
+#ifdef WIN32
+  h.onMessage([&pf, &map, &delta_t, &sensor_range, &sigma_pos, &sigma_landmark](uWS::WebSocket<uWS::SERVER>* ws, char *data, size_t length, uWS::OpCode opCode) {
+#else
   h.onMessage([&pf,&map,&delta_t,&sensor_range,&sigma_pos,&sigma_landmark](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode) {
+#endif
     // "42" at the start of the message means there's a websocket message event.
     // The 4 signifies a websocket message
     // The 2 signifies a websocket event
@@ -142,13 +147,21 @@ int main()
 
           auto msg = "42[\"best_particle\"," + msgJson.dump() + "]";
           // std::cout << msg << std::endl;
-          ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
+#ifdef WIN32
+          ws->send(msg.data(), msg.length(), uWS::OpCode::TEXT);
+#else
+		  ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
+#endif
 	  
         }
       } else {
         std::string msg = "42[\"manual\",{}]";
-        ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
-      }
+#ifdef WIN32
+		ws->send(msg.data(), msg.length(), uWS::OpCode::TEXT);
+#else
+		ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
+#endif
+	  }
     }
 
   });
@@ -168,12 +181,21 @@ int main()
     }
   });
 
+#ifdef WIN32
+  h.onConnection([&h](uWS::WebSocket<uWS::SERVER>* ws, uWS::HttpRequest req) {
+#else
   h.onConnection([&h](uWS::WebSocket<uWS::SERVER> ws, uWS::HttpRequest req) {
+#endif
     std::cout << "Connected!!!" << std::endl;
   });
 
+#ifdef WIN32
+  h.onDisconnection([&h](uWS::WebSocket<uWS::SERVER>* ws, int code, char *message, size_t length) {
+  ws->close();
+#else
   h.onDisconnection([&h](uWS::WebSocket<uWS::SERVER> ws, int code, char *message, size_t length) {
-    ws.close();
+  ws.close();
+#endif
     std::cout << "Disconnected" << std::endl;
   });
 
