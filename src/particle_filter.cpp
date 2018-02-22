@@ -50,10 +50,12 @@ void ParticleFilter::init(double x, double y, double theta, double std[]) {
 }
 
 void ParticleFilter::prediction(double delta_t, double std_pos[], double velocity, double yaw_rate) {
-	// TODO: Add measurements to each particle and add random Gaussian noise.
+	// Add measurements to each particle and add random Gaussian noise.
 	// NOTE: When adding noise you may find std::normal_distribution and std::default_random_engine useful.
 	//  http://en.cppreference.com/w/cpp/numeric/random/normal_distribution
 	//  http://www.cplusplus.com/reference/random/default_random_engine/
+
+	// TODO: Add noise.
 	if (yaw_rate < 0.0001)
 	{
 		for (size_t i = 0; i < particles.size(); i++)
@@ -84,7 +86,23 @@ void ParticleFilter::dataAssociation(std::vector<LandmarkObs> predicted, std::ve
 	//   observed measurement to this particular landmark.
 	// NOTE: this method will NOT be called by the grading code. But you will probably find it useful to 
 	//   implement this method and use it as a helper during the updateWeights phase.
-
+	std::vector<LandmarkObs> obs;
+	for (size_t o_i = 0; o_i < observations.size(); o_i++)
+	{
+		float smallest_dist = numeric_limits<double>::max();
+		LandmarkObs closest;
+		for (size_t p_i = 0; p_i < predicted.size(); p_i++)
+		{
+			double d = dist(predicted[p_i].x, predicted[p_i].y, observations[o_i].x, observations[o_i].y);
+			if (d < smallest_dist)
+			{
+				smallest_dist = d;
+				closest = observations[o_i];
+			}
+		}
+		obs.push_back(closest);
+	}
+	observations = obs;
 }
 
 void ParticleFilter::updateWeights(double sensor_range, double std_landmark[], 
@@ -99,6 +117,25 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
 	//   and the following is a good resource for the actual equation to implement (look at equation 
 	//   3.33
 	//   http://planning.cs.uiuc.edu/node99.html
+	for (size_t i = 0; i < particles.size(); i++)
+	{
+		Particle p = particles[i];
+		// transform maps landmarks into particle CS
+		std::vector<LandmarkObs> predicted;
+		for (size_t obs_i = 0; obs_i < map_landmarks.landmark_list.size(); obs_i++)
+		{
+			Map::single_landmark_s lm = map_landmarks.landmark_list[obs_i];
+			LandmarkObs obs_t;
+			obs_t.id = lm.id_i;
+			// TODO: check if this needs to be the inverse transformation
+			obs_t.x = lm.x_f * cos(p.theta) - lm.y_f * sin(p.theta) + p.x;
+			obs_t.y = lm.x_f * sin(p.theta) + lm.y_f * cos(p.theta) + p.y;
+			predicted.push_back(obs_t);
+		}
+		vector<LandmarkObs> observations_cpy(observations);
+		// TODO: find closest landmark for each observation and calculate weight based on distance.
+		dataAssociation(predicted, observations_cpy);
+	}
 }
 
 void ParticleFilter::resample() {
