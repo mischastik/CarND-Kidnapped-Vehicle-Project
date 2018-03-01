@@ -95,7 +95,7 @@ void ParticleFilter::prediction(double delta_t, double std_pos[], double velocit
 	}
 }
 
-void ParticleFilter::dataAssociation(const std::vector<LandmarkObs> predicted, std::vector<LandmarkObs> observations) 
+void ParticleFilter::dataAssociation(const std::vector<LandmarkObs> predicted, std::vector<LandmarkObs>& observations) 
 {
 	//std::cout << "Enter ASOC...";
 	// Find the predicted measurement that is closest to each observed measurement and assign the 
