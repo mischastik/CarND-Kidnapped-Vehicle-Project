@@ -81,7 +81,7 @@ void ParticleFilter::prediction(double delta_t, double std_pos[], double velocit
 	}
 }
 
-void ParticleFilter::dataAssociation(std::vector<LandmarkObs> predicted, std::vector<LandmarkObs>& observations) {
+std::vector<LandmarkObs> ParticleFilter::dataAssociation(std::vector<LandmarkObs> predicted, std::vector<LandmarkObs>& observations) {
 	// TODO: Find the predicted measurement that is closest to each observed measurement and assign the 
 	//   observed measurement to this particular landmark.
 	// NOTE: this method will NOT be called by the grading code. But you will probably find it useful to 
@@ -102,7 +102,7 @@ void ParticleFilter::dataAssociation(std::vector<LandmarkObs> predicted, std::ve
 		}
 		obs.push_back(closest);
 	}
-	observations = obs;
+	return obs;
 }
 
 void ParticleFilter::updateWeights(double sensor_range, double std_landmark[], 
@@ -120,7 +120,7 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
 	for (size_t i = 0; i < particles.size(); i++)
 	{
 		Particle p = particles[i];
-		// transform maps landmarks into particle CS
+		// transform map landmarks into particle CS
 		std::vector<LandmarkObs> predicted;
 		for (size_t obs_i = 0; obs_i < map_landmarks.landmark_list.size(); obs_i++)
 		{
@@ -132,9 +132,8 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
 			obs_t.y = lm.x_f * sin(p.theta) + lm.y_f * cos(p.theta) + p.y;
 			predicted.push_back(obs_t);
 		}
-		vector<LandmarkObs> observations_cpy(observations);
-		// TODO: find closest landmark for each observation and calculate weight based on distance.
-		dataAssociation(predicted, observations_cpy);
+		// find closest landmark for each observation and calculate weight based on distance.
+		vector<LandmarkObs> mappedObservations = dataAssociation(predicted, observations);
 	}
 }
 
