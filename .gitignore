@@ -8,3 +8,5 @@ src/solutions
 # particle_filter.cpp
 /ide_profiles/VisualStudio/CarND-Kidnapped-Vehicle-Project/.vs/CarND-Kidnapped-Vehicle-Project/v15
 /ide_profiles/VisualStudio/CarND-Kidnapped-Vehicle-Project/Debug
+/ide_profiles/VisualStudio/CarND-Kidnapped-Vehicle-Project/x64/Debug
+/ide_profiles/VisualStudio/CarND-Kidnapped-Vehicle-Project/CarND-Kidnapped-Vehicle-Project.vcxproj.user
