@@ -1,0 +1,29 @@
+﻿  particle_filter.cpp
+c:\program files (x86)\microsoft visual studio\2017\professional\vc\tools\msvc\14.12.25827\include\xutility(2390): warning C4244: 'argument': conversion from 'double' to 'const float', possible loss of data
+  c:\program files (x86)\microsoft visual studio\2017\professional\vc\tools\msvc\14.12.25827\include\xutility(2409): note: see reference to function template instantiation '_OutIt std::_Copy_unchecked1<_InIt,_OutIt>(_InIt,_InIt,_OutIt,std::_General_ptr_iterator_tag)' being compiled
+          with
+          [
+              _OutIt=std::ostream_iterator<float,char,std::char_traits<char>>,
+              _InIt=double *
+          ]
+  c:\program files (x86)\microsoft visual studio\2017\professional\vc\tools\msvc\14.12.25827\include\xutility(2422): note: see reference to function template instantiation '_OutIt std::_Copy_unchecked<double*,_Iter>(_InIt,_InIt,_OutIt)' being compiled
+          with
+          [
+              _OutIt=std::ostream_iterator<float,char,std::char_traits<char>>,
+              _Iter=std::ostream_iterator<float,char,std::char_traits<char>>,
+              _InIt=double *
+          ]
+  c:\program files (x86)\microsoft visual studio\2017\professional\vc\tools\msvc\14.12.25827\include\xutility(2431): note: see reference to function template instantiation '_OutIt std::_Copy_no_deprecate<_InIt,_OutIt>(_InIt,_InIt,_OutIt)' being compiled
+          with
+          [
+              _OutIt=std::ostream_iterator<float,char,std::char_traits<char>>,
+              _InIt=std::_Vector_iterator<std::_Vector_val<std::_Simple_types<double>>>
+          ]
+  c:\balda\entwicklung\carnd\carnd-kidnapped-vehicle-project\src\particle_filter.cpp(222): note: see reference to function template instantiation '_OutIt std::copy<std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>,std::ostream_iterator<float,char,std::char_traits<char>>>(_InIt,_InIt,_OutIt)' being compiled
+          with
+          [
+              _OutIt=std::ostream_iterator<float,char,std::char_traits<char>>,
+              _Ty=double,
+              _InIt=std::_Vector_iterator<std::_Vector_val<std::_Simple_types<double>>>
+          ]
+  CarND-Kidnapped-Vehicle-Project.vcxproj -> C:\balda\Entwicklung\CarND\CarND-Kidnapped-Vehicle-Project\ide_profiles\VisualStudio\CarND-Kidnapped-Vehicle-Project\x64\Debug\CarND-Kidnapped-Vehicle-Project.exe
