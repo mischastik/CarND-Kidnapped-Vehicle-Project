@@ -8,7 +8,7 @@
 
 #ifndef PARTICLE_FILTER_H_
 #define PARTICLE_FILTER_H_
-
+#include <random>
 #include "helper_functions.h"
 
 struct Particle {
@@ -25,8 +25,11 @@ struct Particle {
 
 
 
-class ParticleFilter {
-	
+class ParticleFilter 
+{
+
+	// random number generation engine
+	std::mt19937 gen;
 	// Number of particles to draw
 	int num_particles; 
 	

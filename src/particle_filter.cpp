@@ -14,7 +14,6 @@
 #include <sstream>
 #include <string>
 #include <iterator>
-#include <random>
 
 #include "particle_filter.h"
 
@@ -22,12 +21,13 @@ using namespace std;
 
 void ParticleFilter::init(double x, double y, double theta, double std[])
 {
+	std::random_device rd;
+	std::mt19937 gen(rd());
 	num_particles = 100;
 	// Set the number of particles. Initialize all particles to first position (based on estimates of 
 	//   x, y, theta and their uncertainties from GPS) and all weights to 1. 
 	// Add random Gaussian noise to each particle.
 	// NOTE: Consult particle_filter.h for more information about this method (and others in this file).
-	default_random_engine gen(0);
 	// This line creates a normal (Gaussian) distribution for x.
 	normal_distribution<double> dist_x(x, std[0]);
 	normal_distribution<double> dist_y(y, std[1]);
@@ -56,7 +56,6 @@ void ParticleFilter::prediction(double delta_t, double std_pos[], double velocit
 	//  http://en.cppreference.com/w/cpp/numeric/random/normal_distribution
 	//  http://www.cplusplus.com/reference/random/default_random_engine/
 
-	default_random_engine gen(0);
 	// This line creates a normal (Gaussian) distribution for x.
 	normal_distribution<double> noise_x(0, std_pos[0]);
 	normal_distribution<double> noise_y(0, std_pos[1]);
@@ -179,8 +178,6 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
 
 void ParticleFilter::resample() 
 {
-	std::random_device rd;
-	std::mt19937 gen(rd());
 	std::discrete_distribution<size_t> d(weights.begin(), weights.end());
 
 	std::vector<Particle> newParticles;
