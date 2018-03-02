@@ -30,8 +30,6 @@ void ParticleFilter::init(double x, double y, double theta, double std[])
 	default_random_engine gen(0);
 	// This line creates a normal (Gaussian) distribution for x.
 	normal_distribution<double> dist_x(x, std[0]);
-
-	// Create normal distributions for y and theta.
 	normal_distribution<double> dist_y(y, std[1]);
 	normal_distribution<double> dist_theta(theta, std[2]);
 
@@ -47,11 +45,6 @@ void ParticleFilter::init(double x, double y, double theta, double std[])
 		particles.push_back(p);
 		weights.push_back(1.0);
 	}
-
-	std::cout << "INIT:" << std::endl;
-	std::cout << "P1: (" << particles[0].x << ", " << particles[0].y << ", " << particles[0].theta << ")" << std::endl;
-	std::cout << "P11: (" << particles[10].x << ", " << particles[10].y << ", " << particles[10].theta << ")" << std::endl;
-	std::cout << "P100: (" << particles[99].x << ", " << particles[99].y << ", " << particles[99].theta << ")" << std::endl;
 
 	is_initialized = true;
 }
@@ -86,7 +79,6 @@ void ParticleFilter::prediction(double delta_t, double std_pos[], double velocit
 		for (size_t i = 0; i < particles.size(); i++)
 		{
 			Particle p = particles[i];
-			// TODO: Find out if "* delta_t" is missing after velocity
 			p.x += (velocity / yaw_rate) * (sin(p.theta + yaw_rate * delta_t) - sin(p.theta)) + noise_x(gen); 
 			p.y += (velocity / yaw_rate) * (cos(p.theta) - cos(p.theta + yaw_rate * delta_t)) + noise_y(gen); 
 			p.theta += yaw_rate * delta_t + noise_theta(gen);
@@ -134,9 +126,8 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
 	//   3.33
 	//   http://planning.cs.uiuc.edu/node99.html
 	double weights_sum = 0.0;
-	double min_diff_x = numeric_limits<double>::max();
 
-	for (size_t prt_idx = 0; prt_idx < num_particles; prt_idx++)
+	for (size_t prt_idx = 0; prt_idx < (size_t)num_particles; prt_idx++)
 	{
 		Particle p = particles[prt_idx];
 		// transform observations into map CS
@@ -179,16 +170,11 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
 			LandmarkObs observation = observations_t[obs_idx];
 			LandmarkObs mappedObservation = predicted[observation.id];
 			double diff_x = mappedObservation.x - observation.x;
-			if (diff_x < min_diff_x)
-			{
-				min_diff_x = diff_x;
-			}
 			double diff_y = mappedObservation.y - observation.y;
 			double exponent = -(diff_x * diff_x) / den_x - (diff_y * diff_y) / den_y;
 			weights[prt_idx] *= scaleFactor * exp(exponent);
 		}
 	}
-	std::cout << min_diff_x << std::endl;
 }
 
 void ParticleFilter::resample() 
@@ -235,6 +221,7 @@ void ParticleFilter::resample()
 		}
 		newParticles.push_back(particles[index]);
 	}
+	particles = newParticles;
 }
 
 Particle ParticleFilter::SetAssociations(Particle& particle, const std::vector<int>& associations, 
